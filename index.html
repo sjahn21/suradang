@@ -3,335 +3,734 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#2563eb">
-    <meta name="description" content="수라당 떡 수량 계산기 - 파란상자 배분 최적화">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="수라당 계산기">
-
-    <title>수라당 수량 계산기</title>
-
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563eb'/%3E%3Cpath d='M25 35h50M25 50h50M25 65h50' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Custom Tailwind Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb',
-                        secondary: '#1e40af',
-                        accent: '#60a5fa',
-                    },
-                    animation: {
-                        'slide-up': 'slideUp 0.5s ease-out',
-                        'fade-in': 'fadeIn 0.3s ease-in',
-                        'scale-in': 'scaleIn 0.3s ease-out',
-                    },
-                    keyframes: {
-                        slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        scaleIn: {
-                            '0%': { transform: 'scale(0.95)', opacity: '0' },
-                            '100%': { transform: 'scale(1)', opacity: '1' },
-                        },
-                    },
-                }
-            }
-        }
-    </script>
-
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <title>수라당 파렛트 분배 계산기</title>
     <style>
         * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
-        .input-glow:focus {
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1),
-                        0 4px 6px -1px rgba(0, 0, 0, 0.1),
-                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 32px 24px;
+            text-align: center;
+            color: white;
         }
 
-        .result-card {
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 32px 24px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 10px;
+            letter-spacing: -0.3px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            margin-bottom: 0;
+        }
+
+        .calculate-btn {
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            letter-spacing: -0.3px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .reset-btn {
+            padding: 18px 24px;
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+        }
+
+        .reset-btn:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #374151;
+            transform: translateY(-2px);
+        }
+
+        .reset-btn:active {
+            transform: translateY(0);
+        }
+
+        .distribution-mode-section {
+            margin-bottom: 24px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .mode-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .mode-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .mode-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .mode-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .option-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 14px;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
             transition: all 0.3s ease;
         }
 
-        .result-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-                        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        .mode-option:hover .option-content {
+            border-color: #9ca3af;
+            background: white;
         }
 
-        .number-input::-webkit-outer-spin-button,
-        .number-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        .mode-option.active .option-content {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
         }
 
-        .number-input {
-            -moz-appearance: textfield;
+        .option-icon {
+            font-size: 22px;
+            line-height: 1;
         }
 
-        @keyframes pulse-border {
-            0%, 100% {
-                border-color: rgba(37, 99, 235, 0.5);
+        .option-text {
+            flex: 1;
+        }
+
+        .option-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .option-desc {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .mode-option.active .option-title {
+            color: #5b21b6;
+        }
+
+        .mode-option.active .option-desc {
+            color: #7c3aed;
+        }
+
+        .manual-input-wrapper {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .manual-input-wrapper .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .manual-input-wrapper input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .manual-input-wrapper input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+                margin-top: 0;
             }
-            50% {
-                border-color: rgba(37, 99, 235, 1);
+            to {
+                opacity: 1;
+                max-height: 100px;
+                margin-top: 0;
             }
         }
 
-        .calculating {
-            animation: pulse-border 1.5s ease-in-out infinite;
+        .hidden {
+            display: none;
         }
 
-        /* iOS safe area */
-        @supports (padding: max(0px)) {
+        .result-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            border: 2px solid #bae6fd;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result-section.hidden {
+            display: none;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-title::before {
+            content: "✓";
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #0ea5e9;
+            color: white;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+
+        .result-mode {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #3b82f6;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-item {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .result-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0c4a6e;
+        }
+
+        .result-highlight {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #fbbf24;
+        }
+
+        .result-highlight .result-value {
+            color: #92400e;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 2px solid #fecaca;
+            display: none;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .footer {
+            padding: 20px 24px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 12px;
+            background: #f9fafb;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 0;
+                max-width: 100%;
+            }
+
             body {
-                padding-left: max(0px, env(safe-area-inset-left));
-                padding-right: max(0px, env(safe-area-inset-right));
+                padding: 0;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 24px 20px;
             }
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(37, 99, 235, 0.5);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(37, 99, 235, 0.7);
+        /* iOS 스타일 조정 */
+        @supports (-webkit-touch-callout: none) {
+            .input-group input {
+                font-size: 16px; /* iOS 줌 방지 */
+            }
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-8 animate-fade-in">
-            <div class="inline-block mb-4">
-                <div class="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center mx-auto">
-                    <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-            </div>
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">수라당</h1>
-            <p class="text-white/90 text-lg md:text-xl font-medium">떡 수량 계산기</p>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🥮 수라당 파렛트 분배 계산기</h1>
+            <p>파렛트 줄수와 판수 자동 계산</p>
         </div>
 
-        <!-- Main Calculator Card -->
-        <div class="glass-effect rounded-3xl shadow-2xl p-6 md:p-8 mb-6 animate-scale-in">
-            <!-- Input Section -->
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        총 떡 수량
-                        <span class="text-xs font-normal text-gray-500 ml-1">(개)</span>
-                    </label>
-                    <div class="relative">
-                        <input
-                            type="number"
-                            id="totalQuantity"
-                            class="number-input w-full px-5 py-4 text-2xl font-semibold text-gray-800 bg-white border-2 border-gray-200 rounded-2xl focus:outline-none input-glow transition-all"
-                            placeholder="예: 12000"
-                            min="0"
-                            step="1"
-                        >
-                        <div class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
-                            </svg>
-                        </div>
-                    </div>
+        <div class="content">
+            <div class="input-group">
+                <label for="totalCakes">품목당 총 수량</label>
+                <div class="input-wrapper">
+                    <input type="number" id="totalCakes" placeholder="0" inputmode="numeric">
+                    <span class="input-suffix">개</span>
                 </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        파란상자 당 떡 개수
-                        <span class="text-xs font-normal text-gray-500 ml-1">(개/상자)</span>
-                    </label>
-                    <div class="relative">
-                        <input
-                            type="number"
-                            id="perBox"
-                            class="number-input w-full px-5 py-4 text-2xl font-semibold text-gray-800 bg-white border-2 border-gray-200 rounded-2xl focus:outline-none input-glow transition-all"
-                            placeholder="예: 100"
-                            min="1"
-                            step="1"
-                        >
-                        <div class="absolute right-5 top-1/2 -translate-y-1/2 text-blue-500 bg-blue-50 px-3 py-1 rounded-lg">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        한 줄당 파란상자 개수
-                        <span class="text-xs font-normal text-gray-500 ml-1">(20-23개 권장)</span>
-                    </label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="relative">
-                            <label class="block text-xs text-gray-500 mb-1 ml-1">최소</label>
-                            <input
-                                type="number"
-                                id="minPerRow"
-                                class="number-input w-full px-4 py-3 text-xl font-semibold text-gray-800 bg-white border-2 border-gray-200 rounded-xl focus:outline-none input-glow transition-all"
-                                value="20"
-                                min="1"
-                                step="1"
-                            >
-                        </div>
-                        <div class="relative">
-                            <label class="block text-xs text-gray-500 mb-1 ml-1">최대</label>
-                            <input
-                                type="number"
-                                id="maxPerRow"
-                                class="number-input w-full px-4 py-3 text-xl font-semibold text-gray-800 bg-white border-2 border-gray-200 rounded-xl focus:outline-none input-glow transition-all"
-                                value="23"
-                                min="1"
-                                step="1"
-                            >
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Calculate Button -->
-                <button
-                    id="calculateBtn"
-                    class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-5 px-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 text-lg"
-                >
-                    <span class="flex items-center justify-center">
-                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                        계산하기
-                    </span>
-                </button>
             </div>
-        </div>
 
-        <!-- Results Section -->
-        <div id="results" class="hidden">
-            <!-- Summary Card -->
-            <div class="glass-effect rounded-3xl shadow-2xl p-6 md:p-8 mb-6 animate-slide-up">
-                <div class="flex items-center mb-6">
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center mr-4">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-800">계산 결과</h2>
+            <div class="input-group">
+                <label for="perBox">1 파렛트당 떡 개수</label>
+                <div class="input-wrapper">
+                    <input type="number" id="perBox" value="100" placeholder="100" inputmode="numeric">
+                    <span class="input-suffix">개</span>
                 </div>
+            </div>
 
-                <!-- Key Metrics -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div class="result-card bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-2xl border border-blue-200">
-                        <div class="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">총 상자</div>
-                        <div id="totalBoxes" class="text-3xl font-bold text-blue-900">-</div>
-                        <div class="text-xs text-blue-600 mt-1">개</div>
-                    </div>
-                    <div class="result-card bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-2xl border border-purple-200">
-                        <div class="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-1">총 줄 수</div>
-                        <div id="totalRows" class="text-3xl font-bold text-purple-900">-</div>
-                        <div class="text-xs text-purple-600 mt-1">줄</div>
-                    </div>
-                    <div class="result-card bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-2xl border border-green-200">
-                        <div class="text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">한 줄당</div>
-                        <div id="boxesPerRow" class="text-3xl font-bold text-green-900">-</div>
-                        <div class="text-xs text-green-600 mt-1">개</div>
-                    </div>
-                    <div class="result-card bg-gradient-to-br from-orange-50 to-orange-100 p-5 rounded-2xl border border-orange-200">
-                        <div class="text-xs font-semibold text-orange-600 uppercase tracking-wide mb-1">마지막 줄</div>
-                        <div id="lastRowBoxes" class="text-3xl font-bold text-orange-900">-</div>
-                        <div class="text-xs text-orange-600 mt-1">개</div>
-                    </div>
-                </div>
-
-                <!-- Detailed Breakdown -->
-                <div id="detailedBreakdown" class="space-y-3">
-                    <!-- Will be populated by JavaScript -->
-                </div>
-
-                <!-- Remaining Items Alert -->
-                <div id="remainingAlert" class="hidden mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-5 rounded-xl">
-                    <div class="flex items-start">
-                        <svg class="w-6 h-6 text-yellow-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
-                        <div>
-                            <div class="font-semibold text-yellow-800 mb-1">남은 떡이 있습니다</div>
-                            <div class="text-yellow-700">
-                                <span id="remainingItems" class="font-bold">-</span>개의 떡이 남습니다.
-                                <span id="remainingSuggestion"></span>
+            <div class="distribution-mode-section">
+                <div class="mode-header">한 줄당 파렛트 수</div>
+                
+                <div class="mode-options">
+                    <label class="mode-option active" id="smartModeOption">
+                        <input type="radio" name="distributionMode" value="smart" checked onchange="handleModeChange()">
+                        <div class="option-content">
+                            <span class="option-icon">✨</span>
+                            <div class="option-text">
+                                <div class="option-title">스마트 분배</div>
+                                <div class="option-desc">20~23판 자동 최적화</div>
                             </div>
                         </div>
+                    </label>
+
+                    <label class="mode-option" id="manualModeOption">
+                        <input type="radio" name="distributionMode" value="manual" onchange="handleModeChange()">
+                        <div class="option-content">
+                            <span class="option-icon">🎯</span>
+                            <div class="option-text">
+                                <div class="option-title">수동 설정</div>
+                                <div class="option-desc">한 줄당 파렛트 수 입력</div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="manual-input-wrapper hidden" id="manualInputWrapper">
+                    <div class="input-wrapper">
+                        <input type="number" id="boxesPerRow" placeholder="20" inputmode="numeric" min="1" max="50">
+                        <span class="input-suffix">판</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Visual Representation -->
-            <div class="glass-effect rounded-3xl shadow-2xl p-6 md:p-8 animate-slide-up" style="animation-delay: 0.1s;">
-                <h3 class="text-xl font-bold text-gray-800 mb-5 flex items-center">
-                    <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"></path>
-                    </svg>
-                    배치 시각화
-                </h3>
-                <div id="visualization" class="space-y-3 overflow-x-auto">
-                    <!-- Will be populated by JavaScript -->
+            <div class="button-group">
+                <button class="calculate-btn" onclick="calculate()">
+                    계산하기
+                </button>
+                <button class="reset-btn" onclick="resetForm()">
+                    리셋
+                </button>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="result-section hidden" id="resultSection">
+                <div class="result-title">계산 결과</div>
+                
+                <div class="result-mode" id="resultMode"></div>
+
+                <div class="result-item">
+                    <span class="result-label">한 줄당 파렛트 수</span>
+                    <span class="result-value" id="resultBoxesPerRow">-</span>
+                </div>
+
+                <div class="result-item result-highlight">
+                    <span class="result-label">채운 줄 + 마지막 줄</span>
+                    <span class="result-value" id="stackComposition">-</span>
+                </div>
+
+                <div class="result-item result-highlight">
+                    <span class="result-label" id="lastBoxCakesLabel">마지막 파렛트에 떡 최소 개수</span>
+                    <span class="result-value" id="lastBoxCakes">-</span>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="text-center mt-8 text-white/80 text-sm animate-fade-in">
-            <p>&copy; 2025 수라당. All rights reserved.</p>
+        <div class="footer">
+            © 2025 수라당 | 파렛트 분배 계산기
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        function handleModeChange() {
+            const isManualMode = document.querySelector('input[name="distributionMode"]:checked').value === 'manual';
+            const manualInputWrapper = document.getElementById('manualInputWrapper');
+            const smartModeOption = document.getElementById('smartModeOption');
+            const manualModeOption = document.getElementById('manualModeOption');
+            
+            if (isManualMode) {
+                manualInputWrapper.classList.remove('hidden');
+                smartModeOption.classList.remove('active');
+                manualModeOption.classList.add('active');
+            } else {
+                manualInputWrapper.classList.add('hidden');
+                smartModeOption.classList.add('active');
+                manualModeOption.classList.remove('active');
+                document.getElementById('boxesPerRow').value = '';
+            }
+        }
+
+        function resetForm() {
+            // 입력 필드 초기화
+            document.getElementById('totalCakes').value = '';
+            document.getElementById('perBox').value = '100';
+            document.getElementById('boxesPerRow').value = '';
+            
+            // 스마트 분배 모드로 리셋
+            const smartRadio = document.querySelector('input[name="distributionMode"][value="smart"]');
+            smartRadio.checked = true;
+            handleModeChange();
+            
+            // 결과 영역 값 초기화
+            document.getElementById('resultMode').textContent = '';
+            document.getElementById('resultBoxesPerRow').textContent = '-';
+            document.getElementById('stackComposition').textContent = '-';
+            document.getElementById('lastBoxCakes').textContent = '-';
+            
+            // 결과 섹션 숨기기
+            document.getElementById('resultSection').classList.add('hidden');
+            
+            // 에러 메시지 숨기기
+            document.getElementById('errorMessage').classList.remove('show');
+            
+            // 첫 번째 입력 필드에 포커스
+            document.getElementById('totalCakes').focus();
+        }
+
+        function calculate() {
+            // 입력값 가져오기
+            const totalCakes = parseInt(document.getElementById('totalCakes').value);
+            const perBox = parseInt(document.getElementById('perBox').value);
+            const isManualMode = document.querySelector('input[name="distributionMode"]:checked').value === 'manual';
+            const manualBoxesPerRow = parseInt(document.getElementById('boxesPerRow').value);
+
+            const errorMessage = document.getElementById('errorMessage');
+            const resultSection = document.getElementById('resultSection');
+
+            // 유효성 검사
+            if (!totalCakes || !perBox) {
+                showError('모든 항목을 입력해주세요.');
+                return;
+            }
+
+            if (totalCakes <= 0 || perBox <= 0) {
+                showError('0보다 큰 숫자를 입력해주세요.');
+                return;
+            }
+
+            // 수동 모드일 때 추가 검증
+            if (isManualMode) {
+                if (!manualBoxesPerRow || manualBoxesPerRow <= 0) {
+                    showError('한 줄당 파렛트 수를 입력해주세요.');
+                    return;
+                }
+            }
+
+            // 총 파렛트 수 계산
+            const totalBoxesNeeded = Math.ceil(totalCakes / perBox);
+            
+            let boxesPerRow;
+            let modeText;
+
+            if (isManualMode) {
+                // 수동 모드: 사용자가 입력한 값 사용
+                boxesPerRow = manualBoxesPerRow;
+                modeText = '🎯 수동 설정 모드';
+            } else {
+                // 스마트 분배 모드: 20~23 범위에서 최적값 찾기
+                let bestBoxesPerRow = 20;
+                let bestScore = Infinity;
+                
+                for (let testBoxesPerRow = 20; testBoxesPerRow <= 23; testBoxesPerRow++) {
+                    const fullRows = Math.floor(totalBoxesNeeded / testBoxesPerRow);
+                    const lastRowBoxes = totalBoxesNeeded % testBoxesPerRow;
+                    
+                    // 최적 점수 계산 (마지막 줄이 가장 많이 채워지는 것을 선호)
+                    let score;
+                    if (lastRowBoxes === 0) {
+                        score = 0; // 완전히 채워지면 최고 점수
+                    } else {
+                        score = testBoxesPerRow - lastRowBoxes;
+                    }
+                    
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestBoxesPerRow = testBoxesPerRow;
+                    }
+                }
+                
+                boxesPerRow = bestBoxesPerRow;
+                modeText = '✨ 스마트 분배 (20~23판 자동 최적화)';
+            }
+            
+            // 최종 계산
+            const fullRows = Math.floor(totalBoxesNeeded / boxesPerRow);
+            const lastRowBoxes = totalBoxesNeeded % boxesPerRow;
+            
+            // 전체 줄 수 계산
+            const totalRows = lastRowBoxes > 0 ? fullRows + 1 : fullRows;
+            
+            // 마지막 파렛트의 떡 개수 계산
+            const cakesInFullBoxes = Math.floor(totalCakes / perBox) * perBox;
+            const lastBoxCakes = totalCakes - cakesInFullBoxes;
+
+            // 결과 표시
+            errorMessage.classList.remove('show');
+            resultSection.classList.remove('hidden');
+
+            document.getElementById('resultMode').textContent = modeText;
+            document.getElementById('resultBoxesPerRow').textContent = boxesPerRow + '판';
+            
+            // 쌓기 구성을 하나로 표시
+            let stackText;
+            if (lastRowBoxes > 0) {
+                stackText = fullRows + '줄 + ' + lastRowBoxes + '판';
+            } else {
+                stackText = fullRows + '줄 (완전히 채움)';
+            }
+            document.getElementById('stackComposition').textContent = stackText;
+            
+            // 마지막 파렛트 라벨 동적 변경
+            const lastBoxLabel = document.getElementById('lastBoxCakesLabel');
+            if (lastRowBoxes > 0) {
+                lastBoxLabel.textContent = '마지막 ' + lastRowBoxes + '판 떡 최소 수량';
+            } else {
+                lastBoxLabel.textContent = '마지막 파렛트에 떡 최소 개수';
+            }
+            
+            document.getElementById('lastBoxCakes').textContent = lastBoxCakes > 0 ? lastBoxCakes + '개' : perBox + '개 (완전히 채움)';
+
+            // 부드러운 스크롤
+            setTimeout(() => {
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const resultSection = document.getElementById('resultSection');
+            
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            resultSection.classList.add('hidden');
+        }
+
+        // Enter 키로 계산
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculate();
+            }
+        });
+
+        // 입력 시 에러 메시지 숨기기
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                document.getElementById('errorMessage').classList.remove('show');
+            });
+        });
+    </script>
 </body>
 </html>
