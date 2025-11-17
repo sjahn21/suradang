@@ -181,11 +181,24 @@
             letter-spacing: -0.3px;
         }
 
-        .mode-options {
+        .mode-options-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
             margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .mode-options-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        .mode-option-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .mode-option {
@@ -252,33 +265,67 @@
             color: #7c3aed;
         }
 
+        .mode-option-wrapper.has-input .mode-option .option-content {
+            border-radius: 12px 12px 0 0;
+        }
+
         .manual-input-wrapper {
             animation: slideDown 0.3s ease-out;
+            margin-top: 0;
+            margin-left: 0;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border: 2px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .mode-option-wrapper.has-input.active .manual-input-wrapper {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+        }
+
+        .input-sub-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #9ca3af;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
         }
 
         .manual-input-wrapper .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
+            max-width: 140px;
         }
 
         .manual-input-wrapper input {
             width: 100%;
-            padding: 16px 50px 16px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 14px;
-            font-size: 18px;
+            padding: 10px 35px 10px 14px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             color: #1f2937;
             transition: all 0.3s ease;
-            background: #f9fafb;
+            background: white;
         }
 
         .manual-input-wrapper input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #a78bfa;
             background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
+        }
+
+        .manual-input-wrapper .input-suffix {
+            position: absolute;
+            right: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
         }
 
         @keyframes slideDown {
@@ -482,36 +529,60 @@
             </div>
 
             <div class="distribution-mode-section">
-                <div class="mode-header">한 줄당 파렛트 수</div>
+                <div class="mode-header">줄수와 파렛트 수 분배</div>
                 
-                <div class="mode-options">
-                    <label class="mode-option active" id="smartModeOption">
-                        <input type="radio" name="distributionMode" value="smart" checked onchange="handleModeChange()">
-                        <div class="option-content">
-                            <span class="option-icon">✨</span>
-                            <div class="option-text">
-                                <div class="option-title">스마트 분배</div>
-                                <div class="option-desc">20~23판 자동 최적화</div>
+                <div class="mode-options-grid">
+                    <div class="mode-option-wrapper">
+                        <label class="mode-option active" id="smartModeOption">
+                            <input type="radio" name="distributionMode" value="smart" checked onchange="handleModeChange()">
+                            <div class="option-content">
+                                <span class="option-icon">✨</span>
+                                <div class="option-text">
+                                    <div class="option-title">스마트 분배</div>
+                                    <div class="option-desc">한줄당 20~23판 최적분배</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="mode-option-wrapper">
+                        <label class="mode-option" id="rowPriorityOption">
+                            <input type="radio" name="distributionMode" value="rowPriority" onchange="handleModeChange()">
+                            <div class="option-content">
+                                <span class="option-icon">📏</span>
+                                <div class="option-text">
+                                    <div class="option-title">줄 수 우선</div>
+                                    <div class="option-desc">줄수에 맞춘 파렛트수 계산</div>
+                                </div>
+                            </div>
+                        </label>
+                        <div class="manual-input-wrapper hidden" id="rowPriorityInput">
+                            <label class="input-sub-label">원하는 줄 수</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="desiredRows" placeholder="6" inputmode="numeric" min="1" max="100">
+                                <span class="input-suffix">줄</span>
                             </div>
                         </div>
-                    </label>
+                    </div>
 
-                    <label class="mode-option" id="manualModeOption">
-                        <input type="radio" name="distributionMode" value="manual" onchange="handleModeChange()">
-                        <div class="option-content">
-                            <span class="option-icon">🎯</span>
-                            <div class="option-text">
-                                <div class="option-title">수동 설정</div>
-                                <div class="option-desc">한 줄당 파렛트 수 입력</div>
+                    <div class="mode-option-wrapper">
+                        <label class="mode-option" id="palletPriorityOption">
+                            <input type="radio" name="distributionMode" value="palletPriority" onchange="handleModeChange()">
+                            <div class="option-content">
+                                <span class="option-icon">🎯</span>
+                                <div class="option-text">
+                                    <div class="option-title">파렛트 수 우선</div>
+                                    <div class="option-desc">한 줄당 파렛트 수 지정</div>
+                                </div>
+                            </div>
+                        </label>
+                        <div class="manual-input-wrapper hidden" id="palletPriorityInput">
+                            <label class="input-sub-label">한 줄당 파렛트 수</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="boxesPerRow" placeholder="20" inputmode="numeric" min="1" max="50">
+                                <span class="input-suffix">판</span>
                             </div>
                         </div>
-                    </label>
-                </div>
-
-                <div class="manual-input-wrapper hidden" id="manualInputWrapper">
-                    <div class="input-wrapper">
-                        <input type="number" id="boxesPerRow" placeholder="20" inputmode="numeric" min="1" max="50">
-                        <span class="input-suffix">판</span>
                     </div>
                 </div>
             </div>
@@ -556,20 +627,44 @@
 
     <script>
         function handleModeChange() {
-            const isManualMode = document.querySelector('input[name="distributionMode"]:checked').value === 'manual';
-            const manualInputWrapper = document.getElementById('manualInputWrapper');
+            const mode = document.querySelector('input[name="distributionMode"]:checked').value;
+            const rowPriorityInput = document.getElementById('rowPriorityInput');
+            const palletPriorityInput = document.getElementById('palletPriorityInput');
             const smartModeOption = document.getElementById('smartModeOption');
-            const manualModeOption = document.getElementById('manualModeOption');
+            const rowPriorityOption = document.getElementById('rowPriorityOption');
+            const palletPriorityOption = document.getElementById('palletPriorityOption');
             
-            if (isManualMode) {
-                manualInputWrapper.classList.remove('hidden');
-                smartModeOption.classList.remove('active');
-                manualModeOption.classList.add('active');
-            } else {
-                manualInputWrapper.classList.add('hidden');
+            // wrapper 요소들 가져오기
+            const smartWrapper = smartModeOption.closest('.mode-option-wrapper');
+            const rowWrapper = rowPriorityOption.closest('.mode-option-wrapper');
+            const palletWrapper = palletPriorityOption.closest('.mode-option-wrapper');
+            
+            // 모든 옵션 비활성화
+            smartModeOption.classList.remove('active');
+            rowPriorityOption.classList.remove('active');
+            palletPriorityOption.classList.remove('active');
+            
+            // 모든 wrapper 비활성화
+            smartWrapper.classList.remove('active', 'has-input');
+            rowWrapper.classList.remove('active', 'has-input');
+            palletWrapper.classList.remove('active', 'has-input');
+            
+            // 모든 입력 필드 숨김
+            rowPriorityInput.classList.add('hidden');
+            palletPriorityInput.classList.add('hidden');
+            
+            // 선택된 모드에 따라 처리
+            if (mode === 'smart') {
                 smartModeOption.classList.add('active');
-                manualModeOption.classList.remove('active');
-                document.getElementById('boxesPerRow').value = '';
+                smartWrapper.classList.add('active');
+            } else if (mode === 'rowPriority') {
+                rowPriorityOption.classList.add('active');
+                rowWrapper.classList.add('active', 'has-input');
+                rowPriorityInput.classList.remove('hidden');
+            } else if (mode === 'palletPriority') {
+                palletPriorityOption.classList.add('active');
+                palletWrapper.classList.add('active', 'has-input');
+                palletPriorityInput.classList.remove('hidden');
             }
         }
 
@@ -577,6 +672,7 @@
             // 입력 필드 초기화
             document.getElementById('totalCakes').value = '';
             document.getElementById('perBox').value = '100';
+            document.getElementById('desiredRows').value = '';
             document.getElementById('boxesPerRow').value = '';
             
             // 스마트 분배 모드로 리셋
@@ -589,6 +685,7 @@
             document.getElementById('resultBoxesPerRow').textContent = '-';
             document.getElementById('stackComposition').textContent = '-';
             document.getElementById('lastBoxCakes').textContent = '-';
+            document.getElementById('lastBoxCakesLabel').textContent = '마지막 파렛트에 떡 최소 개수';
             
             // 결과 섹션 숨기기
             document.getElementById('resultSection').classList.add('hidden');
@@ -604,7 +701,8 @@
             // 입력값 가져오기
             const totalCakes = parseInt(document.getElementById('totalCakes').value);
             const perBox = parseInt(document.getElementById('perBox').value);
-            const isManualMode = document.querySelector('input[name="distributionMode"]:checked').value === 'manual';
+            const mode = document.querySelector('input[name="distributionMode"]:checked').value;
+            const desiredRows = parseInt(document.getElementById('desiredRows').value);
             const manualBoxesPerRow = parseInt(document.getElementById('boxesPerRow').value);
 
             const errorMessage = document.getElementById('errorMessage');
@@ -621,8 +719,13 @@
                 return;
             }
 
-            // 수동 모드일 때 추가 검증
-            if (isManualMode) {
+            // 모드별 추가 검증
+            if (mode === 'rowPriority') {
+                if (!desiredRows || desiredRows <= 0) {
+                    showError('원하는 줄 수를 입력해주세요.');
+                    return;
+                }
+            } else if (mode === 'palletPriority') {
                 if (!manualBoxesPerRow || manualBoxesPerRow <= 0) {
                     showError('한 줄당 파렛트 수를 입력해주세요.');
                     return;
@@ -635,11 +738,7 @@
             let boxesPerRow;
             let modeText;
 
-            if (isManualMode) {
-                // 수동 모드: 사용자가 입력한 값 사용
-                boxesPerRow = manualBoxesPerRow;
-                modeText = '🎯 수동 설정 모드';
-            } else {
+            if (mode === 'smart') {
                 // 스마트 분배 모드: 20~23 범위에서 최적값 찾기
                 let bestBoxesPerRow = 20;
                 let bestScore = Infinity;
@@ -664,6 +763,16 @@
                 
                 boxesPerRow = bestBoxesPerRow;
                 modeText = '✨ 스마트 분배 (20~23판 자동 최적화)';
+                
+            } else if (mode === 'rowPriority') {
+                // 줄 수 우선: 원하는 줄 수에 맞춰 파렛트 수 계산
+                boxesPerRow = Math.ceil(totalBoxesNeeded / desiredRows);
+                modeText = '📏 줄 수 우선 (' + desiredRows + '줄 기준)';
+                
+            } else if (mode === 'palletPriority') {
+                // 파렛트 수 우선: 사용자가 입력한 값 사용
+                boxesPerRow = manualBoxesPerRow;
+                modeText = '🎯 파렛트 수 우선 (' + manualBoxesPerRow + '판/줄)';
             }
             
             // 최종 계산
@@ -687,11 +796,11 @@
             // 쌓기 구성을 하나로 표시
             let stackText;
             if (lastRowBoxes > 0) {
-                stackText = fullRows + '줄 + ' + lastRowBoxes + '판';
+                // HTML 태그를 사용하여 "총"을 작게 표시
+                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 14px; font-weight: 500; color: #92400e;">총</span> ' + fullRows + '줄 + ' + lastRowBoxes + '판';
             } else {
-                stackText = fullRows + '줄 (완전히 채움)';
+                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 14px; font-weight: 500; color: #92400e;">총</span> ' + fullRows + '줄 (완전히 채움)';
             }
-            document.getElementById('stackComposition').textContent = stackText;
             
             // 마지막 파렛트 라벨 동적 변경
             const lastBoxLabel = document.getElementById('lastBoxCakesLabel');
