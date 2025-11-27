@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="수라당 계산기">
+    <meta name="description" content="수라당 파렛트 분배 자동 계산기">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <title>수라당 파렛트 분배 계산기</title>
     <style>
         * {
@@ -477,6 +484,34 @@
             background: #f9fafb;
         }
 
+        .install-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .install-btn:active {
+            transform: translateY(0);
+        }
+
         @media (max-width: 480px) {
             .container {
                 border-radius: 0;
@@ -569,7 +604,7 @@
                         <label class="mode-option" id="palletPriorityOption">
                             <input type="radio" name="distributionMode" value="palletPriority" onchange="handleModeChange()">
                             <div class="option-content">
-                                <span class="option-icon">📤</span>
+                                <span class="option-icon">📥</span>
                                 <div class="option-text">
                                     <div class="option-title">파렛트 수 우선</div>
                                     <div class="option-desc">한 줄당 파렛트 수</div>
@@ -609,7 +644,7 @@
                 </div>
 
                 <div class="result-item result-highlight">
-                    <span class="result-label">총 줄 수</span>
+                    <span class="result-label">줄 수</span>
                     <span class="result-value" id="stackComposition">-</span>
                 </div>
 
@@ -841,6 +876,40 @@
                 document.getElementById('errorMessage').classList.remove('show');
             });
         });
+
+        // PWA 설치 지원
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker 등록 완료'))
+                    .catch(err => console.log('Service Worker 등록 실패:', err));
+            });
+        }
+
+        // 설치 버튼 표시
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallButton();
+        });
+
+        function showInstallButton() {
+            const installBtn = document.createElement('button');
+            installBtn.textContent = '📱 홈 화면에 추가';
+            installBtn.className = 'install-btn';
+            installBtn.onclick = async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            };
+            document.querySelector('.content').prepend(installBtn);
+        }
     </script>
 </body>
 </html>

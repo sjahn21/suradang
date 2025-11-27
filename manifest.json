@@ -1,20 +1,31 @@
 {
-  "name": "수라당 수량 계산기",
-  "short_name": "수라당",
-  "description": "떡 생산을 위한 파란상자 배분 최적화 계산기",
+  "name": "수라당 파렛트 분배 계산기",
+  "short_name": "수라당 계산기",
+  "description": "떡 생산량을 파렛트에 최적으로 분배하여 줄수와 판수를 자동 계산",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#667eea",
-  "theme_color": "#2563eb",
+  "theme_color": "#667eea",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%232563eb'/%3E%3Cpath d='M150 180h212M150 256h212M150 332h212' stroke='%23fff' stroke-width='32' stroke-linecap='round'/%3E%3Cpath d='M100 120h312c22 0 40 18 40 40v192c0 22-18 40-40 40H100c-22 0-40-18-40-40V160c0-22 18-40 40-40z' stroke='%23fff' stroke-width='24' fill='none'/%3E%3C/svg%3E",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  "categories": ["productivity", "utilities"],
-  "screenshots": []
+  "screenshots": [
+    {
+      "src": "screenshot.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ]
 }
