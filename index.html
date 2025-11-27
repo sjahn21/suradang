@@ -15,7 +15,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -25,7 +25,7 @@
             width: 100%;
             max-width: 500px;
             background: rgba(255, 255, 255, 0.98);
-            border-radius: 24px;
+            border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             backdrop-filter: blur(10px);
@@ -33,30 +33,30 @@
 
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 32px 24px;
+            padding: 24px 20px;
             text-align: center;
             color: white;
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             letter-spacing: -0.5px;
         }
 
         .header p {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.9;
             font-weight: 400;
         }
 
         .content {
-            padding: 32px 24px;
+            padding: 20px;
         }
 
         .input-group {
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             animation: slideIn 0.4s ease-out;
         }
 
@@ -73,10 +73,10 @@
 
         .input-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #374151;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             letter-spacing: -0.3px;
         }
 
@@ -169,23 +169,23 @@
         }
 
         .distribution-mode-section {
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             animation: slideIn 0.4s ease-out;
         }
 
         .mode-header {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #374151;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             letter-spacing: -0.3px;
         }
 
         .mode-options-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 8px;
+            margin-bottom: 0;
         }
 
         @media (max-width: 600px) {
@@ -216,8 +216,8 @@
         .option-content {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 16px 14px;
+            gap: 8px;
+            padding: 12px 10px;
             background: #f9fafb;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
@@ -236,7 +236,7 @@
         }
 
         .option-icon {
-            font-size: 22px;
+            font-size: 20px;
             line-height: 1;
         }
 
@@ -245,14 +245,14 @@
         }
 
         .option-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: #1f2937;
             margin-bottom: 2px;
         }
 
         .option-desc {
-            font-size: 12px;
+            font-size: 11px;
             color: #6b7280;
             font-weight: 500;
         }
@@ -346,10 +346,10 @@
         }
 
         .result-section {
-            margin-top: 32px;
-            padding: 24px;
+            margin-top: 20px;
+            padding: 18px;
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border-radius: 16px;
+            border-radius: 14px;
             border: 2px solid #bae6fd;
             animation: fadeIn 0.5s ease-out;
         }
@@ -370,13 +370,13 @@
         }
 
         .result-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: #0c4a6e;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .result-title::before {
@@ -384,20 +384,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             background: #0ea5e9;
             color: white;
             border-radius: 50%;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .result-mode {
             background: white;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 8px;
-            margin-bottom: 16px;
-            font-size: 13px;
+            margin-bottom: 12px;
+            font-size: 12px;
             color: #3b82f6;
             font-weight: 600;
             text-align: center;
@@ -406,9 +406,9 @@
 
         .result-item {
             background: white;
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -449,10 +449,10 @@
         .error-message {
             background: #fee2e2;
             color: #991b1b;
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-            font-size: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+            font-size: 13px;
             font-weight: 500;
             border: 2px solid #fecaca;
             display: none;
@@ -470,10 +470,10 @@
         }
 
         .footer {
-            padding: 20px 24px;
+            padding: 16px 20px;
             text-align: center;
             color: #9ca3af;
-            font-size: 12px;
+            font-size: 11px;
             background: #f9fafb;
         }
 
@@ -513,7 +513,7 @@
 
         <div class="content">
             <div class="input-group">
-                <label for="totalCakes">품목당 총 수량</label>
+                <label for="totalCakes">품목당 떡 총수량</label>
                 <div class="input-wrapper">
                     <input type="number" id="totalCakes" placeholder="0" inputmode="numeric">
                     <span class="input-suffix">개</span>
@@ -549,10 +549,10 @@
                         <label class="mode-option" id="rowPriorityOption">
                             <input type="radio" name="distributionMode" value="rowPriority" onchange="handleModeChange()">
                             <div class="option-content">
-                                <span class="option-icon">📏</span>
+                                <span class="option-icon">🪜</span>
                                 <div class="option-text">
                                     <div class="option-title">줄 수 우선</div>
-                                    <div class="option-desc">줄수에 맞춘 파렛트수 계산</div>
+                                    <div class="option-desc">몇 줄인지 먼저 정하기</div>
                                 </div>
                             </div>
                         </label>
@@ -569,10 +569,10 @@
                         <label class="mode-option" id="palletPriorityOption">
                             <input type="radio" name="distributionMode" value="palletPriority" onchange="handleModeChange()">
                             <div class="option-content">
-                                <span class="option-icon">🎯</span>
+                                <span class="option-icon">📤</span>
                                 <div class="option-text">
                                     <div class="option-title">파렛트 수 우선</div>
-                                    <div class="option-desc">한 줄당 파렛트 수 지정</div>
+                                    <div class="option-desc">한 줄당 파렛트 수</div>
                                 </div>
                             </div>
                         </label>
@@ -609,7 +609,7 @@
                 </div>
 
                 <div class="result-item result-highlight">
-                    <span class="result-label">채운 줄 + 마지막 줄</span>
+                    <span class="result-label">총 줄 수</span>
                     <span class="result-value" id="stackComposition">-</span>
                 </div>
 
@@ -796,10 +796,11 @@
             // 쌓기 구성을 하나로 표시
             let stackText;
             if (lastRowBoxes > 0) {
-                // HTML 태그를 사용하여 "총"을 작게 표시
-                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 14px; font-weight: 500; color: #92400e;">총</span> ' + fullRows + '줄 + ' + lastRowBoxes + '판';
+                // 총 N줄 (완전 M줄 + 나머지 X판)
+                const totalRowsDisplay = fullRows + 1;
+                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 14px; font-weight: 500; color: #92400e;">총</span> ' + totalRowsDisplay + ' 줄 (' + fullRows + '줄 + ' + lastRowBoxes + '판)';
             } else {
-                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 14px; font-weight: 500; color: #92400e;">총</span> ' + fullRows + '줄 (완전히 채움)';
+                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 14px; font-weight: 500; color: #92400e;">총</span> ' + fullRows + ' 줄 (완전히 채움)';
             }
             
             // 마지막 파렛트 라벨 동적 변경
