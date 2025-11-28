@@ -2,7 +2,7 @@
   "name": "수라당 파렛트 분배 계산기",
   "short_name": "수라당 계산기",
   "description": "떡 생산량을 파렛트에 최적으로 분배하여 줄수와 판수를 자동 계산",
-  "start_url": "/",
+  "start_url": "https://sjahn21.github.io/suradang/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#667eea",
