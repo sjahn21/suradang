@@ -153,7 +153,7 @@
 
 ## 📄 라이선스
 
-© 2025 수라당. All rights reserved.
+© 2025 안성진. All rights reserved.
 
 ## 🤝 지원
 
@@ -161,4 +161,4 @@
 
 ---
 
-**Made with ❤️ for 수라당**
+**Made with ❤️ for 안성진**
