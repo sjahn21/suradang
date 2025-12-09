@@ -116,7 +116,7 @@
 
         .button-group {
             display: grid;
-            grid-template-columns: 1fr auto;
+            grid-template-columns: 2fr 1fr;
             gap: 10px;
             margin-bottom: 0;
         }
@@ -288,10 +288,10 @@
 
         .input-sub-label {
             display: block;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             color: #9ca3af;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             letter-spacing: 0.3px;
         }
 
@@ -299,15 +299,15 @@
             position: relative;
             display: flex;
             align-items: center;
-            max-width: 140px;
+            max-width: 120px;
         }
 
         .manual-input-wrapper input {
             width: 100%;
-            padding: 10px 35px 10px 14px;
+            padding: 9px 32px 9px 12px;
             border: 1.5px solid #e5e7eb;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: #1f2937;
             transition: all 0.3s ease;
@@ -580,14 +580,14 @@
                                 <span class="option-icon">🪜</span>
                                 <div class="option-text">
                                     <div class="option-title">줄 수 우선</div>
-                                    <div class="option-desc">몇 줄인지 먼저 정하기</div>
+                                    <div class="option-desc">몇 줄로 분배할지 지정(최소 줄당 20파렛트)</div>
                                 </div>
                             </div>
                         </label>
                         <div class="manual-input-wrapper hidden" id="rowPriorityInput">
                             <label class="input-sub-label">원하는 줄 수</label>
                             <div class="input-wrapper">
-                                <input type="number" id="desiredRows" placeholder="6" inputmode="numeric" min="1" max="100">
+                                <input type="number" id="desiredRows" placeholder="0" inputmode="numeric" min="1" max="100">
                                 <span class="input-suffix">줄</span>
                             </div>
                         </div>
@@ -600,14 +600,14 @@
                                 <span class="option-icon">📥</span>
                                 <div class="option-text">
                                     <div class="option-title">파렛트 수 우선</div>
-                                    <div class="option-desc">한 줄당 파렛트 수</div>
+                                    <div class="option-desc">한 줄에 파렛트를 몇 장 쌓는지 지정</div>
                                 </div>
                             </div>
                         </label>
                         <div class="manual-input-wrapper hidden" id="palletPriorityInput">
                             <label class="input-sub-label">한 줄당 파렛트 수</label>
                             <div class="input-wrapper">
-                                <input type="number" id="boxesPerRow" placeholder="20" inputmode="numeric" min="1" max="50">
+                                <input type="number" id="boxesPerRow" placeholder="0" inputmode="numeric" min="1" max="50">
                                 <span class="input-suffix">판</span>
                             </div>
                         </div>
@@ -642,7 +642,7 @@
                 </div>
 
                 <div class="result-item result-highlight">
-                    <span class="result-label" id="lastBoxCakesLabel">마지막 파렛트에 떡 최소 개수</span>
+                    <span class="result-label" id="lastBoxCakesLabel">마지막 판 떡수</span>
                     <span class="result-value" id="lastBoxCakes">-</span>
                 </div>
             </div>
@@ -795,7 +795,13 @@
             } else if (mode === 'rowPriority') {
                 // 줄 수 우선: 원하는 줄 수에 맞춰 파렛트 수 계산
                 boxesPerRow = Math.ceil(totalBoxesNeeded / desiredRows);
-                modeText = '📏 줄 수 우선 (' + desiredRows + '줄 기준)';
+                
+                // 최소 한 줄당 20개 파렛트 보장
+                if (boxesPerRow < 20) {
+                    boxesPerRow = 20;
+                }
+                
+                modeText = '🪜 줄 수 우선 (' + desiredRows + '줄 기준)';
                 
             } else if (mode === 'palletPriority') {
                 // 파렛트 수 우선: 사용자가 입력한 값 사용
@@ -819,27 +825,28 @@
             resultSection.classList.remove('hidden');
 
             document.getElementById('resultMode').textContent = modeText;
-            document.getElementById('resultBoxesPerRow').textContent = boxesPerRow + '판';
+            document.getElementById('resultBoxesPerRow').innerHTML = '<span style="font-size: 17px;">' + boxesPerRow + '판</span>';
             
             // 쌓기 구성을 하나로 표시
             let stackText;
             if (lastRowBoxes > 0) {
                 // 총 N줄 (완전 M줄 + 나머지 X판)
                 const totalRowsDisplay = fullRows + 1;
-                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 14px; font-weight: 500; color: #92400e;">총</span> ' + totalRowsDisplay + ' 줄 (' + fullRows + '줄 + ' + lastRowBoxes + '판)';
+                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 13px; font-weight: 500; color: #92400e;">총</span> <span style="font-size: 17px;">' + totalRowsDisplay + ' 줄</span> <span style="font-size: 14px; color: #6b7280;">(' + fullRows + '줄 + ' + lastRowBoxes + '판)</span>';
             } else {
-                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 14px; font-weight: 500; color: #92400e;">총</span> ' + fullRows + ' 줄 (완전히 채움)';
+                document.getElementById('stackComposition').innerHTML = '<span style="font-size: 13px; font-weight: 500; color: #92400e;">총</span> <span style="font-size: 17px;">' + fullRows + ' 줄</span> <span style="font-size: 14px; color: #6b7280;">(가득채움)</span>';
             }
             
             // 마지막 파렛트 라벨 동적 변경
             const lastBoxLabel = document.getElementById('lastBoxCakesLabel');
-            if (lastRowBoxes > 0) {
-                lastBoxLabel.textContent = '마지막 ' + lastRowBoxes + '판 떡 최소 수량';
-            } else {
-                lastBoxLabel.textContent = '마지막 파렛트에 떡 최소 개수';
-            }
+            lastBoxLabel.textContent = '마지막 판 떡수';
             
-            document.getElementById('lastBoxCakes').textContent = lastBoxCakes > 0 ? lastBoxCakes + '개' : perBox + '개 (완전히 채움)';
+            // 마지막 줄 최소 개수 표시
+            if (lastBoxCakes > 0) {
+                document.getElementById('lastBoxCakes').innerHTML = '<span style="font-size: 17px;">' + lastBoxCakes + '개</span>';
+            } else {
+                document.getElementById('lastBoxCakes').innerHTML = '<span style="font-size: 17px;">' + perBox + '개</span> <span style="font-size: 14px; color: #6b7280;">(가득채움)</span>';
+            }
 
             // 부드러운 스크롤
             setTimeout(() => {
@@ -906,6 +913,34 @@
             };
             document.querySelector('.content').prepend(installBtn);
         }
+
+        // iOS 사용자를 위한 안내
+        function checkiOS() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isStandalone = window.navigator.standalone;
+            
+            if (isIOS && !isStandalone) {
+                const iosGuide = document.createElement('div');
+                iosGuide.className = 'ios-install-guide';
+                iosGuide.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); 
+                                border: 2px solid #bae6fd; 
+                                border-radius: 10px; 
+                                padding: 12px; 
+                                margin-bottom: 12px; 
+                                font-size: 12px; 
+                                color: #0c4a6e;
+                                line-height: 1.5;">
+                        <strong>📱 아이폰 사용자</strong><br>
+                        하단 <strong>공유 버튼 (□↑)</strong> → <strong>"홈 화면에 추가"</strong> 선택
+                    </div>
+                `;
+                document.querySelector('.content').prepend(iosGuide);
+            }
+        }
+
+        // 페이지 로드 시 iOS 체크
+        checkiOS();
     </script>
 </body>
 </html>
